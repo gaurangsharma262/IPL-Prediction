@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Predictor & Simulator 2026</title>
+    <meta name="description" content="AI powered IPL match prediction and 50-year future simulator.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <nav class="navbar glass-panel">
+        <div class="nav-logo">
+            <div class="logo-icon">🏏</div>
+            <h1>Antigravity <span>IPL AI</span></h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#predictor" class="active">Match Predictor</a></li>
+            <li><a href="#simulator">50-Year Simulator</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <!-- Section 1: Predictor -->
+        <section id="predictor" class="section glass-panel fade-in">
+            <header class="section-header">
+                <h2>Match <span>Predictor</span></h2>
+                <p>Select match details to run the AI prediction model.</p>
+            </header>
+            
+            <form id="prediction-form" class="grid-form">
+                <div class="form-group">
+                    <label for="team1">Team 1</label>
+                    <select id="team1" name="team1" required>
+                        <option value="" disabled selected>Select Team</option>
+                        {% for team in teams %}
+                            <option value="{{ team }}">{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group vs-badge">
+                    <span>VS</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="team2">Team 2</label>
+                    <select id="team2" name="team2" required>
+                        <option value="" disabled selected>Select Team</option>
+                        {% for team in teams %}
+                            <option value="{{ team }}">{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="venue">Venue</label>
+                    <select id="venue" name="venue" required>
+                        <option value="" disabled selected>Select Venue</option>
+                        {% for venue in venues %}
+                            <option value="{{ venue }}">{{ venue }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="toss_winner">Toss Winner</label>
+                    <select id="toss_winner" name="toss_winner" required>
+                        <option value="" disabled selected>Select Teams First</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="toss_decision">Toss Decision</label>
+                    <select id="toss_decision" name="toss_decision" required>
+                        <option value="" disabled selected>Select Decision</option>
+                        <option value="bat">Bat</option>
+                        <option value="field">Field</option>
+                    </select>
+                </div>
+
+                <div class="form-submit full-width">
+                    <button type="submit" class="btn primary-btn">Predict Outcome ⚡</button>
+                </div>
+            </form>
+
+            <div id="prediction-result" class="result-container hidden">
+                <h3 class="result-title">Prediction Results</h3>
+                <div class="progress-wrapper">
+                    <div class="team-label" id="res-t1-name">Team A</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="res-t1-bar"></div>
+                    </div>
+                    <div class="prob-value" id="res-t1-val">0%</div>
+                </div>
+                <div class="progress-wrapper">
+                    <div class="team-label" id="res-t2-name">Team B</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="res-t2-bar"></div>
+                    </div>
+                    <div class="prob-value" id="res-t2-val">0%</div>
+                </div>
+                <div class="winner-announcement">
+                    Predicted Winner: <span id="res-winner"></span> 🏆
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Simulator -->
+        <section id="simulator" class="section glass-panel fade-in" style="display: none;">
+            <header class="section-header">
+                <h2>50-Year <span>Simulator</span></h2>
+                <p>Journey into the future to see the next generations of IPL Champions.</p>
+            </header>
+
+            <div class="simulator-controls">
+                <div class="form-group">
+                    <label for="years">Years to Simulate (1-50)</label>
+                    <div class="slider-wrapper">
+                        <input type="range" id="years" name="years" min="1" max="50" value="10">
+                        <span id="years-val">10</span>
+                    </div>
+                </div>
+                <button id="run-sim-btn" class="btn secondary-btn">Run Simulation 🔮</button>
+            </div>
+
+            <div class="timeline-container hidden" id="timeline-container">
+                <ul class="timeline" id="timeline-list">
+                    <!-- Dynamic Items injected here -->
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

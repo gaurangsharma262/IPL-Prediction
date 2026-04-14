@@ -1,0 +1,9 @@
+# Dataset
+IPL.csv
+
+# Python Virtual Environments
+venv/
+.env
+
+# MacOS
+.DS_Store
