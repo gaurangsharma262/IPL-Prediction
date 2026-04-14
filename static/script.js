@@ -42,16 +42,36 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Update Toss Winner Options Dynamically
+    // Update Dynamic Options (Toss and Venue)
     const team1Select = document.getElementById('team1');
     const team2Select = document.getElementById('team2');
     const tossWinnerSelect = document.getElementById('toss_winner');
+    const venueSelect = document.getElementById('venue');
 
-    const updateTossOptions = () => {
+    // Store original venue options safely
+    const originalVenues = Array.from(venueSelect.options)
+        .map(opt => ({ value: opt.value, text: opt.textContent }))
+        .filter(opt => opt.value !== "");
+
+    const homeVenuesMap = {
+        'Chennai Super Kings': 'MA Chidambaram Stadium, Chepauk, Chennai',
+        'Delhi Capitals': 'Arun Jaitley Stadium, Delhi',
+        'Gujarat Titans': 'Narendra Modi Stadium, Ahmedabad',
+        'Kolkata Knight Riders': 'Eden Gardens, Kolkata',
+        'Lucknow Super Giants': 'Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium, Lucknow',
+        'Mumbai Indians': 'Wankhede Stadium, Mumbai',
+        'Punjab Kings': 'Punjab Cricket Association IS Bindra Stadium, Mohali',
+        'Rajasthan Royals': 'Sawai Mansingh Stadium, Jaipur',
+        'Royal Challengers Bengaluru': 'M Chinnaswamy Stadium, Bengaluru',
+        'Sunrisers Hyderabad': 'Rajiv Gandhi International Stadium, Uppal, Hyderabad'
+    };
+
+    const updateDynamicOptions = () => {
         const t1 = team1Select.value;
         const t2 = team2Select.value;
-        const currentWinner = tossWinnerSelect.value;
         
+        // --- 1. Update Toss Winner ---
+        const currentTossWinner = tossWinnerSelect.value;
         tossWinnerSelect.innerHTML = '<option value="" disabled selected>Select Toss Winner</option>';
         
         if (t1) {
@@ -68,13 +88,48 @@ document.addEventListener('DOMContentLoaded', () => {
             tossWinnerSelect.appendChild(opt2);
         }
 
-        if (currentWinner === t1 || currentWinner === t2) {
-            tossWinnerSelect.value = currentWinner;
+        if (currentTossWinner === t1 || currentTossWinner === t2) {
+            tossWinnerSelect.value = currentTossWinner;
+        }
+
+        // --- 2. Update Venue (Home Stadium Priority) ---
+        const currentVenue = venueSelect.value;
+        venueSelect.innerHTML = '<option value="" disabled selected>Select Venue</option>';
+        
+        const priorityVenues = [];
+        if (t1 && homeVenuesMap[t1]) priorityVenues.push({ team: t1, venue: homeVenuesMap[t1] });
+        if (t2 && homeVenuesMap[t2]) priorityVenues.push({ team: t2, venue: homeVenuesMap[t2] });
+
+        // Add Priority Venues First
+        priorityVenues.forEach(pv => {
+            const matchingOpt = originalVenues.find(v => v.value === pv.venue);
+            if (matchingOpt) {
+                const opt = document.createElement('option');
+                opt.value = matchingOpt.value;
+                opt.textContent = matchingOpt.text + ` (${pv.team} Home)`;
+                venueSelect.appendChild(opt);
+            }
+        });
+
+        // Add the rest
+        const priorityVenueValues = priorityVenues.map(pv => pv.venue);
+        originalVenues.forEach(v => {
+            if (!priorityVenueValues.includes(v.value)) {
+                const opt = document.createElement('option');
+                opt.value = v.value;
+                opt.textContent = v.text;
+                venueSelect.appendChild(opt);
+            }
+        });
+
+        // Restore previously selected venue if still valid
+        if (currentVenue) {
+            venueSelect.value = currentVenue;
         }
     };
 
-    team1Select.addEventListener('change', updateTossOptions);
-    team2Select.addEventListener('change', updateTossOptions);
+    team1Select.addEventListener('change', updateDynamicOptions);
+    team2Select.addEventListener('change', updateDynamicOptions);
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
