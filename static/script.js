@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.innerHTML = `
                     <div class="timeline-content">
                         <div class="timeline-year">Season ${item.year}</div>
-                        <div class="timeline-winner">🏆 ${item.winner}</div>
+                        <div class="timeline-winner">${item.winner}</div>
                         <div class="timeline-runner">Runner-up: ${item.runner_up}</div>
                     </div>
                 `;
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(err);
         } finally {
             simBtn.disabled = false;
-            simBtn.textContent = 'Run Simulation 🔮';
+            simBtn.textContent = 'Run Simulation';
         }
     });
 });
